@@ -9,6 +9,7 @@ export default function Shoot() {
   const navigate = useNavigate();
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
   const [viewers, setViewers] = useState(0);
   const [copied, setCopied] = useState(false);
   const [flash, setFlash] = useState(false);
@@ -25,13 +26,20 @@ export default function Shoot() {
         video: { facingMode: { ideal: "environment" } },
         audio: false,
       });
-      if (videoRef.current) videoRef.current.srcObject = stream;
+      streamRef.current = stream;
       setCameraReady(true);
     } catch (err) {
       setCameraError("Camera access denied. Please allow camera in Settings.");
       console.error(err);
     }
   };
+
+  // Attach stream after the video element renders
+  useEffect(() => {
+    if (cameraReady && videoRef.current && streamRef.current) {
+      videoRef.current.srcObject = streamRef.current;
+    }
+  }, [cameraReady]);
 
   // Connect socket
   useEffect(() => {
