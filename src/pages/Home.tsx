@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:3001";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
@@ -12,7 +12,7 @@ export default function Home() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${SERVER_URL}/session`, { method: "POST" });
+      const res = await fetch(`${API_URL}/session`, { method: "POST" });
       if (!res.ok) throw new Error(`Server responded with ${res.status}`);
       const { sessionId } = (await res.json()) as { sessionId: string };
       navigate(`/shoot/${sessionId}`);
