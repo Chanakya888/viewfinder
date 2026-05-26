@@ -5,16 +5,20 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:3001";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const startSession = async () => {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetch(`${SERVER_URL}/session`, { method: "POST" });
+      if (!res.ok) throw new Error(`Server responded with ${res.status}`);
       const { sessionId } = (await res.json()) as { sessionId: string };
       navigate(`/shoot/${sessionId}`);
     } catch (err) {
-      console.error("Failed to create session", err);
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      setError(msg);
       setLoading(false);
     }
   };
@@ -26,6 +30,7 @@ export default function Home() {
       <button className="btn-primary" onClick={startSession} disabled={loading}>
         {loading ? "Starting..." : "Start Session"}
       </button>
+      {error && <p className="error-msg">{error}</p>}
       <a
         className="built-by"
         href="https://chanakyakilaru.com/"

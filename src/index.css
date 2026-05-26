@@ -57,6 +57,13 @@ body {
   margin-bottom: 8px;
 }
 
+.error-msg {
+  color: #ff6b6b;
+  font-size: 14px;
+  text-align: center;
+  max-width: 280px;
+}
+
 .built-by {
   position: absolute;
   bottom: 32px;

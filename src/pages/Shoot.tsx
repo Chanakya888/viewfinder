@@ -13,26 +13,25 @@ export default function Shoot() {
   const [copied, setCopied] = useState(false);
   const [flash, setFlash] = useState(false);
   const [connected, setConnected] = useState(false);
+  const [cameraReady, setCameraReady] = useState(false);
+  const [cameraError, setCameraError] = useState<string | null>(null);
 
   const viewerLink = `${APP_URL}/view/${sessionId}`;
 
-  // Start camera
-  useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({ video: { facingMode: { ideal: "environment" } }, audio: false })
-      .then((stream) => {
-        if (videoRef.current) videoRef.current.srcObject = stream;
-      })
-      .catch(console.error);
-
-    return () => {
-      if (videoRef.current?.srcObject) {
-        (videoRef.current.srcObject as MediaStream)
-          .getTracks()
-          .forEach((t) => t.stop());
-      }
-    };
-  }, []);
+  // Start camera — called directly from a tap so iOS Safari grants permission
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: "environment" } },
+        audio: false,
+      });
+      if (videoRef.current) videoRef.current.srcObject = stream;
+      setCameraReady(true);
+    } catch (err) {
+      setCameraError("Camera access denied. Please allow camera in Settings.");
+      console.error(err);
+    }
+  };
 
   // Connect socket
   useEffect(() => {
@@ -51,6 +50,11 @@ export default function Shoot() {
       socket.off("joined");
       socket.off("viewer-joined");
       socket.off("viewer-left");
+      if (videoRef.current?.srcObject) {
+        (videoRef.current.srcObject as MediaStream)
+          .getTracks()
+          .forEach((t) => t.stop());
+      }
       socket.disconnect();
     };
   }, [sessionId]);
@@ -81,6 +85,24 @@ export default function Shoot() {
     socket.emit("end-session", { sessionId });
     navigate("/");
   };
+
+  // Camera permission gate
+  if (!cameraReady) {
+    return (
+      <div className="screen center">
+        {cameraError ? (
+          <p className="error-msg">{cameraError}</p>
+        ) : (
+          <>
+            <p className="subtitle">Tap to enable your camera</p>
+            <button className="btn-primary" onClick={startCamera}>
+              Enable Camera
+            </button>
+          </>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="screen shoot-screen">
