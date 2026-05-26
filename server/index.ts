@@ -43,7 +43,14 @@ async function getViewerCount(sessionId: string): Promise<number> {
 // --- Express + Socket.IO setup ---
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "HEAD", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+}));
+app.options("*", cors());
 app.use(express.json());
 
 const server = http.createServer(app);
