@@ -1,7 +1,7 @@
 import express from "express";
 import http from "http";
+import path from "path";
 import { Server } from "socket.io";
-import cors from "cors";
 import { v4 as uuidv4 } from "uuid";
 
 // --- Socket.IO event maps ---
@@ -34,7 +34,6 @@ interface Session {
 
 const sessions: Record<string, Session> = {};
 
-// Count only viewer sockets in a room — source of truth instead of manual tracking
 async function getViewerCount(sessionId: string): Promise<number> {
   const sockets = await io.in(sessionId).fetchSockets();
   return sockets.filter((s) => s.data.role === "viewer").length;
@@ -43,14 +42,6 @@ async function getViewerCount(sessionId: string): Promise<number> {
 // --- Express + Socket.IO setup ---
 
 const app = express();
-app.use(cors({
-  origin: "*",
-  methods: ["GET", "HEAD", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  preflightContinue: false,
-  optionsSuccessStatus: 204,
-}));
-app.options("*", cors());
 app.use(express.json());
 
 const server = http.createServer(app);
@@ -59,17 +50,16 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents, Record<string,
   maxHttpBufferSize: 5e6,
 });
 
-// Health check
+// --- API routes ---
+
 app.get("/session/health", (_req, res) => res.json({ status: "ok" }));
 
-// REST: create a new session
 app.post("/session", (_req, res) => {
   const sessionId = uuidv4().slice(0, 8);
   sessions[sessionId] = { createdAt: Date.now() };
   res.json({ sessionId });
 });
 
-// REST: check if session exists
 app.get("/session/:id", (req, res) => {
   const { id } = req.params;
   if (sessions[id]) {
@@ -78,6 +68,20 @@ app.get("/session/:id", (req, res) => {
     res.status(404).json({ exists: false });
   }
 });
+
+// --- Serve frontend static files ---
+
+const distPath = path.join(__dirname, "../dist");
+app.use(express.static(distPath));
+
+// SPA fallback — serve index.html for all non-API routes
+app.get("*", (_req, res) => {
+  res.sendFile(path.join(distPath, "index.html"), (err) => {
+    if (err) res.status(404).send("Not found");
+  });
+});
+
+// --- Socket.IO handlers ---
 
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
