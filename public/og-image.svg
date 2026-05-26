@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#0a0a0a"/>
+
+  <!-- Subtle inner border -->
+  <rect x="40" y="40" width="1120" height="550" rx="24" fill="none" stroke="#1f1f1f" stroke-width="1.5"/>
+
+  <!-- Camera emoji -->
+  <text x="600" y="300"
+        text-anchor="middle"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
+        font-size="100"
+        font-weight="700"
+        fill="#ffffff"
+        letter-spacing="-3">📷 viewfinder</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="372"
+        text-anchor="middle"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
+        font-size="30"
+        fill="#888888">Stream photos to anyone, instantly.</text>
+
+  <!-- URL -->
+  <text x="600" y="544"
+        text-anchor="middle"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
+        font-size="20"
+        fill="#333333">viewfinder.chanakyakilaru.com</text>
+</svg>

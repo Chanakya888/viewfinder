@@ -90,6 +90,9 @@ export default function Shoot() {
   };
 
   const endSession = () => {
+    // Stop all camera tracks immediately so iOS releases the green camera indicator
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
     socket.emit("end-session", { sessionId });
     navigate("/");
   };

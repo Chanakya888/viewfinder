@@ -1,19 +1,30 @@
-# Viewfinder
+# 📷 Viewfinder
 
-Instant photo feedback for shoots. The photographer captures a shot and it appears on everyone else's screen in real time — no crowding around the camera, no AirDropping, no passing the phone around.
+**Stream photos to anyone, instantly.**
+
+Open a session, share the link, and every photo you take appears on their screen the moment you snap it. No app, no video call, no waiting.
+
+**[viewfinder.chanakyakilaru.com](https://viewfinder.chanakyakilaru.com)**
+
+---
 
 ## How it works
 
-1. Photographer opens the app and starts a session
-2. A shareable link is generated — send it to whoever is on the shoot
-3. Everyone opens the link on their phone or tablet
-4. Every shot the photographer takes appears on all their screens instantly
+1. Open Viewfinder and start a session
+2. Share the link with whoever needs to see
+3. Start shooting — every photo appears on their screen instantly
+
+That's it. Sessions are temporary. Nothing is saved or stored anywhere.
+
+---
 
 ## Stack
 
 - **Frontend** — React + TypeScript, Vite
-- **Backend** — Node.js + Express + Socket.IO, TypeScript
-- **Real-time** — WebSockets via Socket.IO
+- **Backend** — Node.js + Express + Socket.IO
+- **Deployed** — Railway (single deployment, Express serves the built frontend)
+
+---
 
 ## Running locally
 
@@ -22,7 +33,7 @@ Instant photo feedback for shoots. The photographer captures a shot and it appea
 ```bash
 cd server
 npm install
-npm start
+npm run dev
 ```
 
 **Frontend**
@@ -32,18 +43,19 @@ npm install
 npm run dev
 ```
 
-The frontend runs on `http://localhost:5173` and expects the backend on `http://localhost:3001`. You can configure these via a `.env` file:
+Create a `.env` file at the root:
 
 ```
 VITE_SERVER_URL=http://localhost:3001
-VITE_APP_URL=http://localhost:5173
 ```
 
-## Notes
+Frontend runs on `http://localhost:5173`, backend on `http://localhost:3001`.
 
-- Photos are never stored — they pass through the server in memory and are gone once delivered
-- Sessions last until the photographer ends them or disconnects
-- Works across any device with a browser
+---
+
+## Privacy
+
+Photos are never saved. They stream through the server in real time and are gone the moment they're delivered. Sessions delete themselves when the shooter disconnects.
 
 ---
 

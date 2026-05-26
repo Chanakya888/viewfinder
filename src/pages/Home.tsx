@@ -26,7 +26,7 @@ export default function Home() {
   return (
     <div className="screen center">
       <h1 className="logo">viewfinder</h1>
-      <p className="subtitle">Instant photo feedback for shoots</p>
+      <p className="subtitle">Stream photos to anyone, instantly.</p>
       <button className="btn-primary" onClick={startSession} disabled={loading}>
         {loading ? "Starting..." : "Start Session"}
       </button>
