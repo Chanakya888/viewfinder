@@ -19,7 +19,7 @@ export default function Shoot() {
   // Start camera
   useEffect(() => {
     navigator.mediaDevices
-      .getUserMedia({ video: { facingMode: "environment" }, audio: false })
+      .getUserMedia({ video: { facingMode: { ideal: "environment" } }, audio: false })
       .then((stream) => {
         if (videoRef.current) videoRef.current.srcObject = stream;
       })

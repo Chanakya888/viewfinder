@@ -52,6 +52,9 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents, Record<string,
   maxHttpBufferSize: 5e6,
 });
 
+// Health check
+app.get("/session/health", (_req, res) => res.json({ status: "ok" }));
+
 // REST: create a new session
 app.post("/session", (_req, res) => {
   const sessionId = uuidv4().slice(0, 8);
